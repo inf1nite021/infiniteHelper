@@ -8,7 +8,7 @@ import { detectApps } from "../lib/detect.server";
 import { loadShopContact, parseEmail, parseMessage } from "../lib/shopContact.server";
 import { MESSAGE_MAX } from "../lib/limits";
 
-const APP_NAME = "InfiniteHelper";
+const APP_NAME = "infiniteHelper";
 
 export const loader = async ({ request }) => {
   const { admin, session, sessionToken } = await authenticate.admin(request);
@@ -171,7 +171,7 @@ export default function Index() {
       <s-card>
         <s-stack gap="base">
           <s-paragraph>
-            InfiniteHelper sieht nach, welche Apps in deinem Shop Spuren hinterlassen
+            infiniteHelper sieht nach, welche Apps in deinem Shop Spuren hinterlassen
             haben, und schickt uns die Liste zusammen mit deiner Nachricht. Daraus
             sagen wir dir, was sich durch eine einzige eigene App ersetzen ließe.
           </s-paragraph>

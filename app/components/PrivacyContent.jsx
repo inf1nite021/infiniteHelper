@@ -6,7 +6,7 @@ export const h2Style = {
 };
 
 /**
- * Datenschutzerklaerung fuer InfiniteHelper.
+ * Datenschutzerklaerung fuer infiniteHelper.
  *
  * DE und EN. Die Oberflaeche der App ist deutsch; Englisch kommt dazu, weil
  * Shopifys Pruefung in englischer Sprache stattfindet und der App Store
@@ -27,7 +27,7 @@ export const LANGS = [
 export const privacyContent = {
   de: {
     title: "Datenschutzerklärung",
-    sub: "InfiniteHelper · Stand 2026",
+    sub: "infiniteHelper · Stand 2026",
     body: (
       <>
         <h2 style={h2Style}>1. Verantwortlicher</h2>
@@ -41,7 +41,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>2. Erhobene Daten</h2>
         <p>
-          InfiniteHelper sucht in deinem Shop nach Spuren installierter Apps und
+          infiniteHelper sucht in deinem Shop nach Spuren installierter Apps und
           schickt das Ergebnis zusammen mit deiner Anfrage an uns. Dabei werden
           folgende Daten verarbeitet:
         </p>
@@ -62,7 +62,7 @@ export const privacyContent = {
           </li>
         </ul>
         <p>
-          InfiniteHelper verarbeitet <strong>keine personenbezogenen Kundendaten</strong> –
+          infiniteHelper verarbeitet <strong>keine personenbezogenen Kundendaten</strong> –
           der App fehlen die Zugriffsrechte, um Kund:innen oder Bestellungen
           überhaupt zu lesen. Sie kann auch keine Produkte, Preise oder Inhalte
           deines Shops verändern; alle Rechte sind Leserechte.
@@ -89,7 +89,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>5. Weitergabe an Dritte</h2>
         <p>
-          InfiniteHelper liest über die Shopify Admin API; Shopify Ireland Ltd.
+          infiniteHelper liest über die Shopify Admin API; Shopify Ireland Ltd.
           agiert dabei als Auftragsverarbeiter gemäß Art. 28 DSGVO. Beim Absenden
           gehen die unter Ziffer 2 genannten Daten an unseren eigenen
           Support-Endpunkt auf infinitecodes.de und eröffnen ein Ticket in unserem
@@ -121,7 +121,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>8. Cookies</h2>
         <p>
-          InfiniteHelper verwendet keine Tracking-Cookies. Das Speichern und
+          infiniteHelper verwendet keine Tracking-Cookies. Das Speichern und
           Auslesen der technisch notwendigen Session-Cookies für die
           Shopify-Authentifizierung ist nach § 25 Abs. 2 Nr. 2 TDDDG zulässig;
           die damit verbundene Verarbeitung stützt sich auf Art. 6 Abs. 1 lit. f
@@ -132,7 +132,7 @@ export const privacyContent = {
   },
   en: {
     title: "Privacy Policy",
-    sub: "InfiniteHelper · As of 2026",
+    sub: "infiniteHelper · As of 2026",
     body: (
       <>
         <h2 style={h2Style}>1. Data Controller</h2>
@@ -146,7 +146,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>2. Data Collected</h2>
         <p>
-          InfiniteHelper looks for traces of installed apps in your shop and sends
+          infiniteHelper looks for traces of installed apps in your shop and sends
           the result to us together with your enquiry. The following data is
           processed:
         </p>
@@ -167,7 +167,7 @@ export const privacyContent = {
           </li>
         </ul>
         <p>
-          InfiniteHelper processes no <strong>personal customer data</strong> – the
+          infiniteHelper processes no <strong>personal customer data</strong> – the
           app does not hold the access scopes required to read customers or orders.
           Nor can it change any products, prices or content in your shop; every
           scope it holds is read-only.
@@ -193,7 +193,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>5. Disclosure to Third Parties</h2>
         <p>
-          InfiniteHelper reads through the Shopify Admin API; Shopify Ireland Ltd.
+          infiniteHelper reads through the Shopify Admin API; Shopify Ireland Ltd.
           acts as a data processor under Art. 28 GDPR. On submission, the data
           listed in section 2 is sent to our own support endpoint on
           infinitecodes.de and opens a ticket in our self-hosted helpdesk; the
@@ -223,7 +223,7 @@ export const privacyContent = {
 
         <h2 style={h2Style}>8. Cookies</h2>
         <p>
-          InfiniteHelper does not use tracking cookies. Storing and reading the
+          infiniteHelper does not use tracking cookies. Storing and reading the
           technically necessary session cookies for Shopify authentication is
           permitted under Section 25(2) no. 2 TDDDG; the associated processing is
           based on Art. 6(1)(f) GDPR.

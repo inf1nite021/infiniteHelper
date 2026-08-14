@@ -1,7 +1,7 @@
 import { h2Style } from "./PrivacyContent";
 
 /**
- * Nutzungsbedingungen fuer InfiniteHelper. DE und EN, wie die
+ * Nutzungsbedingungen fuer infiniteHelper. DE und EN, wie die
  * Datenschutzerklaerung. Massgeblich ist die deutsche Fassung (Ziffer 7).
  *
  * Bewusst KEIN Auftragsverarbeitungsvertrag. Ein AVV nach Art. 28 DSGVO
@@ -14,12 +14,12 @@ import { h2Style } from "./PrivacyContent";
 export const termsContent = {
   de: {
     title: "Nutzungsbedingungen",
-    sub: "InfiniteHelper · Stand 2026",
+    sub: "infiniteHelper · Stand 2026",
     body: (
       <>
         <p>
           Diese Nutzungsbedingungen regeln die Nutzung der Shopify-App
-          InfiniteHelper (die &quot;App&quot;), bereitgestellt von Gianluca Iacona,
+          infiniteHelper (die &quot;App&quot;), bereitgestellt von Gianluca Iacona,
           handelnd als infinitecodes (vormals infinitecodes solutions,
           infinitecodes-solutions.de), Rolshover Straße 70, 51105 Köln (der
           &quot;Anbieter&quot;), durch den Händler, der die App installiert (der
@@ -107,11 +107,11 @@ export const termsContent = {
   },
   en: {
     title: "Terms of Use",
-    sub: "InfiniteHelper · As of 2026",
+    sub: "infiniteHelper · As of 2026",
     body: (
       <>
         <p>
-          These Terms of Use govern the use of the Shopify app InfiniteHelper
+          These Terms of Use govern the use of the Shopify app infiniteHelper
           (the &quot;App&quot;), provided by Gianluca Iacona, trading as
           infinitecodes (formerly infinitecodes solutions,
           infinitecodes-solutions.de), Rolshover Straße 70, 51105 Cologne,

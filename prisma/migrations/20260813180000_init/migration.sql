@@ -1,4 +1,4 @@
--- InfiniteHelper: Sitzungen und ein Vermerk je gesendeter Anfrage.
+-- infiniteHelper: Sitzungen und ein Vermerk je gesendeter Anfrage.
 --
 -- Die Sitzungstabelle traegt denselben Aufbau wie in den uebrigen Apps, sie
 -- wird von @shopify/shopify-app-session-storage-prisma vorgegeben. Sie steht

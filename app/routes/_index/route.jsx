@@ -22,7 +22,7 @@ export default function Index() {
         </div>
 
         <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#202223", margin: "0 0 8px" }}>
-          InfiniteHelper
+          infiniteHelper
         </h1>
         <p style={{ color: "#6d7175", margin: "0 0 32px", lineHeight: 1.5 }}>
           Behält die Preise deiner Wettbewerber im Blick und passt deine eigenen
