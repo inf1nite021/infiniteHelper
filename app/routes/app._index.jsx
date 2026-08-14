@@ -52,18 +52,42 @@ export const action = async ({ request }) => {
   /* Shop und Person erneut serverseitig holen - das Formular liefert nur die freien Felder. */
   const contact = await loadShopContact(admin, session.shop, sessionToken);
 
+  /*
+    kind: "support" und nicht etwa "helper" - geprueft am 14.08.2026 in
+    kontakt-api/validate.js: Ein unbekanntes kind faellt still auf "contact"
+    zurueck, und dieser Zweig verwirft app, shop, shopId und userId. Die
+    Anfrage waere als anonymes Kontaktformular angekommen, und ein Zammad-
+    Ticket haette es auch nicht gegeben; das legt der Endpunkt nur bei
+    "support" an.
+
+    summary: true hebt die Nachrichtengrenze von 250 auf 4000 Zeichen. Die
+    App-Liste haengt hinten an der Nachricht, weil der Endpunkt kein eigenes
+    Feld dafuer kennt - ein zusaetzliches Feld wuerde stillschweigend
+    verworfen, und still verlorene Daten sind das Schlimmste von allem.
+
+    Leere Nachricht abfangen: Der Endpunkt weist sie mit "Nachricht fehlt" ab,
+    unsere Oberflaeche laesst sie aber zu. Ohne den Rueckfallwert scheiterte
+    genau die Anfrage, die nur die App-Liste schicken will.
+  */
+  const appListe = apps.length ? apps.map((a) => `• ${a}`).join("\n") : "(keine angegeben)";
+  const nachricht = [
+    message.value || "(keine Nachricht)",
+    "",
+    `Gefundene Apps – ${erkannt} erkannt, ${apps.length} gemeldet:`,
+    appListe,
+  ].join("\n");
+
   const payload = {
-    kind: "helper",
+    kind: "support",
     name: [contact.firstName, contact.lastName].filter(Boolean).join(" "),
     email: email.value,
-    message: message.value,
+    message: nachricht,
+    summary: true,
     app: APP_NAME,
     shop: contact.shop,
     shopId: contact.shopId,
     userId: contact.userId,
     lang: "de",
-    apps,
-    appsDetected: erkannt,
   };
 
   // eslint-disable-next-line no-undef
@@ -146,7 +170,13 @@ export default function Index() {
   const sendet = navigation.state === "submitting";
 
   const [nachricht, setNachricht] = useState("");
-  const [email, setEmail] = useState(contact.email ?? "");
+  /*
+    Leer, nicht mit der Shop-Kontaktadresse vorbelegt. Die ist oft ein
+    Sammelpostfach wie info@ oder die private Adresse des Inhabers - beides
+    selten die Stelle, an der eine Antwort ankommen soll. Wer sie will, tippt
+    sie; das Feld schlaegt sie nicht vor.
+  */
+  const [email, setEmail] = useState("");
 
   const rest = MESSAGE_MAX - nachricht.length;
 
@@ -279,7 +309,7 @@ export default function Index() {
                   maxLength={120}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@firma.de"
+                  placeholder="An welche Adresse sollen wir antworten?"
                   style={feldStil}
                 />
               </div>

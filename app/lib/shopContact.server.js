@@ -17,7 +17,6 @@ export async function loadShopContact(admin, shopDomain, sessionToken) {
     shop: shopDomain,
     firstName: "",
     lastName: "",
-    email: "",
     shopId: "",
     /*
       Die Kennung der angemeldeten Person. Bei eingebetteten Apps liefert
@@ -31,13 +30,12 @@ export async function loadShopContact(admin, shopDomain, sessionToken) {
     const antwort = await admin.graphql(
       `#graphql
         query helperShopContact {
-          shop { id name shopOwnerName contactEmail }
+          shop { id name shopOwnerName }
         }`,
     );
     const daten = await antwort.json();
     const shop = daten?.data?.shop;
 
-    contact.email = shop?.contactEmail ?? "";
     /* "gid://shopify/Shop/12345678" -> "12345678" */
     contact.shopId = String(shop?.id ?? "").split("/").pop() ?? "";
 
