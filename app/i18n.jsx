@@ -328,7 +328,13 @@ const LANG_OPTIONS = [
   { code: "pt", label: "Português" },
 ];
 
-const LangCtx = createContext({ lang: "de", t: de, setLang: () => {} });
+/*
+  Englisch ist die Ausgangssprache, nicht Deutsch. Der App Store richtet sich
+  an Haendler aus allen Maerkten, und die Pruefer bei Shopify lesen Englisch -
+  eine deutsche Oberflaeche beim ersten Oeffnen ist fuer beide die falsche
+  Annahme. Wer umschaltet, behaelt seine Wahl (localStorage "ihl_lang").
+*/
+const LangCtx = createContext({ lang: "en", t: en, setLang: () => {} });
 
 // eslint-disable-next-line react/prop-types -- reiner Durchreicher, keine Datenprops
 export function LangProvider({ children }) {
@@ -337,7 +343,7 @@ export function LangProvider({ children }) {
     Rendern: Der Server kennt localStorage nicht, und eine dort abweichende
     Startsprache liesse die Seite beim Andocken neu aufbauen.
   */
-  const [lang, setLangState] = useState("de");
+  const [lang, setLangState] = useState("en");
 
   useEffect(() => {
     const gespeichert = localStorage.getItem("ihl_lang");
@@ -350,7 +356,7 @@ export function LangProvider({ children }) {
   };
 
   return (
-    <LangCtx.Provider value={{ lang, t: TRANSLATIONS[lang] ?? de, setLang }}>
+    <LangCtx.Provider value={{ lang, t: TRANSLATIONS[lang] ?? en, setLang }}>
       {children}
     </LangCtx.Provider>
   );
