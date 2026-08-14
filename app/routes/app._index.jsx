@@ -173,6 +173,32 @@ export default function Index() {
     setNeueApp("");
   };
 
+  /*
+    Die Liste als Text, eine Zeile je App mit ihren Fundstellen. Bewusst
+    nicht als Datei zum Herunterladen: In der eingebetteten App liegt ein
+    Download hinter zwei Sandbox-Regeln, die Zwischenablage nicht.
+  */
+  const [kopiert, setKopiert] = useState(false);
+  const kopieren = async () => {
+    const text = alleApps
+      .map((a) => `${a.name} (${a.quellen.map((q) => t.quellen[q] ?? q).join(", ")})`)
+      .join("\n");
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const feld = document.createElement("textarea");
+      feld.value = text;
+      feld.style.position = "fixed";
+      feld.style.opacity = "0";
+      document.body.appendChild(feld);
+      feld.select();
+      document.execCommand("copy");
+      document.body.removeChild(feld);
+    }
+    setKopiert(true);
+    setTimeout(() => setKopiert(false), 2000);
+  };
+
   const [nachricht, setNachricht] = useState("");
   /*
     Leer, nicht mit der Shop-Kontaktadresse vorbelegt. Die ist oft ein
@@ -187,7 +213,7 @@ export default function Index() {
   if (actionData?.success) {
     return (
       <s-page heading={t.sent.heading}>
-        <s-card>
+        <s-section accessibilityLabel={t.heading}>
           <s-stack gap="base">
             <s-banner tone="success" heading={t.sent.banner}>
               <s-paragraph>
@@ -195,14 +221,14 @@ export default function Index() {
               </s-paragraph>
             </s-banner>
           </s-stack>
-        </s-card>
+        </s-section>
       </s-page>
     );
   }
 
   return (
     <s-page heading={t.heading} size="large">
-      <s-card>
+      <s-section accessibilityLabel={t.heading}>
         <s-stack gap="base">
           <s-paragraph>
             {t.intro}
@@ -222,13 +248,13 @@ export default function Index() {
             </s-banner>
           ) : null}
         </s-stack>
-      </s-card>
+      </s-section>
 
       <Form method="post">
         <input type="hidden" name="detectedCount" value={detected.length} />
 
         <div style={{ marginTop: "16px" }}>
-          <s-card>
+          <s-section accessibilityLabel={t.heading}>
             <s-stack gap="base">
               <s-heading>{t.apps.heading(alleApps.length)}</s-heading>
               <s-text color="subdued">
@@ -292,12 +318,31 @@ export default function Index() {
                 </div>
               </div>
 
+              {/*
+                Die Liste mitnehmen, ohne etwas zu senden. Das ist der Nutzen,
+                den die App auch dann hat, wenn der Haendler nie anfragt -
+                eine Bestandsaufnahme seines Shops, die ihm gehoert.
+
+                Erst die Zwischenablage-API, dann ein verstecktes Textfeld als
+                Rueckfall: In einem iframe ohne Berechtigung wirft
+                navigator.clipboard, und ein Knopf, der stumm nichts tut,
+                waere schlimmer als einer, der altmodisch kopiert.
+              */}
+              {alleApps.length > 0 ? (
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                  <s-button type="button" onClick={kopieren}>
+                    {kopiert ? t.apps.copied : t.apps.copy}
+                  </s-button>
+                  <s-text color="subdued">{t.apps.copyHint}</s-text>
+                </div>
+              ) : null}
+
             </s-stack>
-          </s-card>
+          </s-section>
         </div>
 
         <div style={{ marginTop: "16px" }}>
-          <s-card>
+          <s-section accessibilityLabel={t.heading}>
             <s-stack gap="base">
               <s-heading>{t.data.heading}</s-heading>
               <s-text color="subdued">
@@ -364,13 +409,23 @@ export default function Index() {
                 {t.consentTail}
               </s-text>
 
+              {/*
+                Zwei Saetze, die vor dem Knopf stehen muessen, nicht in der FAQ:
+                dass niemand senden muss, und was das Senden kostet. Der zweite
+                zieht die Grenze, die der App Store zieht - die App ist
+                unentgeltlich, ein Auftrag daraus waere ein eigener Vertrag
+                ausserhalb von Shopify.
+              */}
+              <s-text color="subdued">{t.optional}</s-text>
+              <s-text color="subdued">{t.freeNote}</s-text>
+
               <div>
                 <s-button variant="primary" type="submit" {...(sendet ? { loading: true } : {})}>
                   {t.submit}
                 </s-button>
               </div>
             </s-stack>
-          </s-card>
+          </s-section>
         </div>
       </Form>
     </s-page>

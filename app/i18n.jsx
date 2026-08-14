@@ -16,7 +16,7 @@ const de = {
   nav: { main: "Apps erfassen", privacy: "Datenschutz" },
   heading: "Welche Apps sind zurzeit in Verwendung?",
   intro:
-    "infiniteHelper sieht nach, welche Apps in deinem Shop installiert sind und schickt uns die Liste zusammen mit deiner Nachricht. Daraus sagen wir dir, was sich durch eine einzige eigene App ersetzen ließe.",
+    "infiniteHelper durchsucht deinen Shop nach Spuren installierter Apps – Skripte, Theme-Blöcke, Versand- und Fulfillment-Dienste, Rabatte und Metafelder – und stellt sie als eine Liste zusammen. Die Liste gehört dir: Du kannst sie prüfen, ergänzen und kopieren, etwa um Reste längst deinstallierter Apps zu finden. Wenn du magst, schickst du sie uns anschließend als Anfrage – freiwillig und in einem zweiten Schritt.",
   again: (datum) =>
     `Du hast am ${datum} schon einmal angefragt. Eine weitere Anfrage ist kein Problem – schreib gern dazu, was sich geändert hat.`,
   apps: {
@@ -26,6 +26,9 @@ const de = {
     addLabel: "Fehlt eine App? Namen eintragen und einfügen",
     addPlaceholder: "z. B. Klaviyo",
     addButton: "Einfügen",
+    copy: "Liste kopieren",
+    copied: "Kopiert",
+    copyHint: "Die Liste landet in deiner Zwischenablage – ohne dass etwas an uns geht.",
   },
   quellen: {
     script: "Skript im Shop",
@@ -56,6 +59,10 @@ const de = {
   consentLink: "Datenschutzerklärung",
   consentTail:
     ". Wir sind dafür Verantwortlicher im Sinne der DSGVO – es findet keine Auftragsverarbeitung statt.",
+  optional:
+    "Das Senden ist freiwillig. Die Liste oben kannst du ohne Anfrage prüfen, ergänzen und kopieren.",
+  freeNote:
+    "infiniteHelper ist unentgeltlich – es gibt keine Abrechnung über Shopify und keine Zahlungsdaten. Aus einer Anfrage entsteht keine Zahlungspflicht; ein Angebot von uns wäre ein eigener Vertrag außerhalb dieser App und ist freibleibend.",
   submit: "Anfrage senden",
   sent: {
     heading: "Anfrage gesendet",
@@ -78,7 +85,7 @@ const en = {
   nav: { main: "Collect apps", privacy: "Privacy" },
   heading: "Which apps are you currently using?",
   intro:
-    "infiniteHelper checks which apps are installed in your shop and sends us the list together with your message. From that we tell you what a single custom app could replace.",
+    "infiniteHelper searches your shop for traces of installed apps – scripts, theme blocks, carrier and fulfillment services, discounts and metafields – and collects them into one list. The list is yours: review it, add to it, copy it, for instance to spot leftovers of apps you uninstalled long ago. If you want to, you can then send it to us as an enquiry – optional, and a separate step.",
   again: (datum) =>
     `You already sent an enquiry on ${datum}. Another one is no problem – just tell us what has changed.`,
   apps: {
@@ -88,6 +95,9 @@ const en = {
     addLabel: "Is an app missing? Enter its name and add it",
     addPlaceholder: "e.g. Klaviyo",
     addButton: "Add",
+    copy: "Copy list",
+    copied: "Copied",
+    copyHint: "The list goes to your clipboard – nothing is sent to us.",
   },
   quellen: {
     script: "Script in the shop",
@@ -118,6 +128,10 @@ const en = {
   consentLink: "privacy policy",
   consentTail:
     ". We are the controller for this within the meaning of the GDPR – no processing on your behalf takes place.",
+  optional:
+    "Sending is optional. You can review, extend and copy the list above without making an enquiry.",
+  freeNote:
+    "infiniteHelper is free of charge – there is no billing through Shopify and no payment data. An enquiry creates no payment obligation; any offer from us would be a separate contract outside this app and is non-binding.",
   submit: "Send enquiry",
   sent: {
     heading: "Enquiry sent",
@@ -139,7 +153,7 @@ const es = {
   nav: { main: "Registrar apps", privacy: "Privacidad" },
   heading: "¿Qué apps utilizas actualmente?",
   intro:
-    "infiniteHelper comprueba qué apps están instaladas en tu tienda y nos envía la lista junto con tu mensaje. A partir de ahí te decimos qué podría sustituir una sola app propia.",
+    "infiniteHelper busca en tu tienda rastros de apps instaladas – scripts, bloques del tema, servicios de envío y fulfillment, descuentos y metacampos – y los reúne en una lista. La lista es tuya: revísala, complétala y cópiala, por ejemplo para detectar restos de apps que desinstalaste hace tiempo. Si quieres, después nos la envías como consulta: es opcional y un paso aparte.",
   again: (datum) =>
     `Ya enviaste una consulta el ${datum}. Otra no es problema: cuéntanos qué ha cambiado.`,
   apps: {
@@ -149,6 +163,9 @@ const es = {
     addLabel: "¿Falta alguna app? Escribe su nombre y añádela",
     addPlaceholder: "p. ej. Klaviyo",
     addButton: "Añadir",
+    copy: "Copiar lista",
+    copied: "Copiado",
+    copyHint: "La lista va a tu portapapeles: no se nos envía nada.",
   },
   quellen: {
     script: "Script en la tienda",
@@ -179,6 +196,10 @@ const es = {
   consentLink: "política de privacidad",
   consentTail:
     ". Somos responsables del tratamiento en el sentido del RGPD: no hay encargo de tratamiento.",
+  optional:
+    "Enviar es opcional. Puedes revisar, completar y copiar la lista de arriba sin enviar ninguna consulta.",
+  freeNote:
+    "infiniteHelper es gratuita: no hay facturación a través de Shopify ni datos de pago. Una consulta no genera ninguna obligación de pago; una oferta nuestra sería un contrato aparte fuera de esta app y es sin compromiso.",
   submit: "Enviar consulta",
   sent: {
     heading: "Consulta enviada",
@@ -200,7 +221,7 @@ const fr = {
   nav: { main: "Recenser les apps", privacy: "Confidentialité" },
   heading: "Quelles apps utilisez-vous actuellement ?",
   intro:
-    "infiniteHelper regarde quelles apps sont installées dans votre boutique et nous envoie la liste avec votre message. Nous vous disons ensuite ce qu’une seule app sur mesure pourrait remplacer.",
+    "infiniteHelper parcourt votre boutique à la recherche de traces d’apps installées – scripts, blocs de thème, services de transport et de fulfillment, réductions et métachamps – et les réunit en une liste. Cette liste est la vôtre : vérifiez-la, complétez-la, copiez-la, par exemple pour repérer les restes d’apps désinstallées depuis longtemps. Si vous le souhaitez, vous nous l’envoyez ensuite comme demande – facultatif, et dans un second temps.",
   again: (datum) =>
     `Vous avez déjà envoyé une demande le ${datum}. Une autre ne pose aucun problème – dites-nous ce qui a changé.`,
   apps: {
@@ -210,6 +231,9 @@ const fr = {
     addLabel: "Une app manque ? Saisissez son nom et ajoutez-la",
     addPlaceholder: "p. ex. Klaviyo",
     addButton: "Ajouter",
+    copy: "Copier la liste",
+    copied: "Copié",
+    copyHint: "La liste va dans votre presse-papiers – rien ne nous est envoyé.",
   },
   quellen: {
     script: "Script dans la boutique",
@@ -240,6 +264,10 @@ const fr = {
   consentLink: "politique de confidentialité",
   consentTail:
     ". Nous en sommes le responsable de traitement au sens du RGPD – il n’y a pas de sous-traitance.",
+  optional:
+    "L’envoi est facultatif. Vous pouvez consulter, compléter et copier la liste ci-dessus sans faire de demande.",
+  freeNote:
+    "infiniteHelper est gratuite : aucune facturation via Shopify, aucune donnée de paiement. Une demande ne crée aucune obligation de paiement ; une offre de notre part serait un contrat distinct en dehors de cette app et reste sans engagement.",
   submit: "Envoyer la demande",
   sent: {
     heading: "Demande envoyée",
@@ -261,7 +289,7 @@ const pt = {
   nav: { main: "Registar apps", privacy: "Privacidade" },
   heading: "Que apps utiliza atualmente?",
   intro:
-    "O infiniteHelper verifica que apps estão instaladas na sua loja e envia-nos a lista juntamente com a sua mensagem. A partir daí dizemos-lhe o que uma única app própria poderia substituir.",
+    "O infiniteHelper procura na sua loja vestígios de apps instaladas – scripts, blocos do tema, serviços de envio e de fulfillment, descontos e metacampos – e reúne-os numa lista. A lista é sua: reveja-a, complete-a e copie-a, por exemplo para encontrar restos de apps que desinstalou há muito. Se quiser, envia-nos depois a lista como pedido – é opcional e um segundo passo.",
   again: (datum) =>
     `Já enviou um pedido em ${datum}. Outro não é problema – diga-nos o que mudou.`,
   apps: {
@@ -271,6 +299,9 @@ const pt = {
     addLabel: "Falta alguma app? Escreva o nome e acrescente",
     addPlaceholder: "por ex. Klaviyo",
     addButton: "Acrescentar",
+    copy: "Copiar lista",
+    copied: "Copiado",
+    copyHint: "A lista vai para a área de transferência – nada nos é enviado.",
   },
   quellen: {
     script: "Script na loja",
@@ -301,6 +332,10 @@ const pt = {
   consentLink: "política de privacidade",
   consentTail:
     ". Somos responsáveis pelo tratamento nos termos do RGPD – não há subcontratação.",
+  optional:
+    "O envio é opcional. Pode rever, completar e copiar a lista acima sem fazer qualquer pedido.",
+  freeNote:
+    "O infiniteHelper é gratuito – não há faturação através da Shopify nem dados de pagamento. Um pedido não cria qualquer obrigação de pagamento; uma proposta nossa seria um contrato separado fora desta app e não é vinculativa.",
   submit: "Enviar pedido",
   sent: {
     heading: "Pedido enviado",

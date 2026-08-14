@@ -29,6 +29,10 @@ export const apiVersion = ApiVersion.October25;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 export const authenticate = shopify.authenticate;
 export const unauthenticated = shopify.unauthenticated;
-export const login = shopify.login;
+/*
+  Kein login-Export mehr. shopify.login() diente allein dem Anmeldeformular der
+  Vorlage, das mit Anforderung 2.3.1 des App Store entfallen ist. Ein Export
+  ohne Aufrufer laedt dazu ein, das Formular versehentlich wiederzubeleben.
+*/
 export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
