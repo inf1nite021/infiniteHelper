@@ -1,10 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-# TODO: client_id aus dem Partner-Dashboard eintragen, oder einmal
-#   docker run --rm -it -v "$PWD":/app -w /app -v /root/.config:/root/.config \
-#     node:22-bookworm npx shopify app config link
-# laufen lassen - das traegt ihn ein und legt die Zuordnung an.
-client_id = "TODO_CLIENT_ID"
+client_id = "2678db99a201fff4c106806694b5c55b"
 name = "InfiniteHelper"
 application_url = "https://infinite-helper.infinitecodes.de"
 embedded = true
