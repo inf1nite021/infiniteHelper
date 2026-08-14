@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+/// Vermerk, dass eine Anfrage rausging - nicht ihr Inhalt.
+///
+/// Name, E-Mail und Nachricht landen im Helpdesk und werden hier ausdruecklich
+/// NICHT gespeichert. Die App traegt sonst eine zweite Kopie personenbezogener
+/// Daten, die niemand braucht und die bei jeder Auskunft mitbeantwortet werden
+/// muesste. Was hier steht, genuegt fuer den Zweck: Die Oberflaeche kann
+/// zeigen "am 13.08. gesendet" und eine versehentliche Doppelsendung erkennen.
+///
+/// appsDetected/appsReported sind blosse Anzahlen. Auch die Namen der
+/// erkannten Apps bleiben aussen vor - sie gehoeren zum Anliegen und damit ins
+/// Ticket, nicht in eine Datenbank, die den Shop ueberdauert.
+model Inquiry {
+  id            String   @id @default(cuid())
+  shop          String
+  sentAt        DateTime @default(now())
+  appsDetected  Int      @default(0)
+  appsReported  Int      @default(0)
+
+  @@index([shop])
+}

@@ -1,0 +1,62 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+# TODO: client_id aus dem Partner-Dashboard eintragen, oder einmal
+#   docker run --rm -it -v "$PWD":/app -w /app -v /root/.config:/root/.config \
+#     node:22-bookworm npx shopify app config link
+# laufen lassen - das traegt ihn ein und legt die Zuordnung an.
+client_id = "TODO_CLIENT_ID"
+name = "InfiniteHelper"
+application_url = "https://infinite-helper.infinitecodes.de"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-01"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request" ]
+  uri = "/webhooks/customers/data_request"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/redact" ]
+  uri = "/webhooks/customers/redact"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "shop/redact" ]
+  uri = "/webhooks/shop/redact"
+
+[access_scopes]
+# Ausschliesslich Leserechte, und nur solche, die Spuren installierter Apps
+# sichtbar machen. Die App schreibt nichts in den Shop.
+#
+#   read_script_tags  - Skripte, die aeltere Apps einbinden; die Quell-URL
+#                       nennt den Anbieter
+#   read_themes       - App-Bloecke im Theme, also Apps mit Theme-Erweiterung
+#   read_shipping     - Versanddienste, die Apps registrieren
+#   read_fulfillments - Fulfillment-Dienste, die Apps registrieren
+#   read_discounts    - Rabatte, die von einer App-Function stammen
+#   read_products     - Metafeld-Definitionen im Namensraum app--<id>--…
+#
+# Eine App, die ausschliesslich die Admin-API nutzt, hinterlaesst keine dieser
+# Spuren. Die Erkennung ist deshalb ausdruecklich unvollstaendig, und die
+# Oberflaeche sagt das auch.
+scopes = "read_script_tags,read_themes,read_shipping,read_fulfillments,read_discounts,read_products"
+optional_scopes = [ ]
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [
+  "https://infinite-helper.infinitecodes.de/auth/callback",
+  "https://infinite-helper.infinitecodes.de/auth/shopify/callback",
+  "https://infinite-helper.infinitecodes.de/api/auth/callback"
+]
