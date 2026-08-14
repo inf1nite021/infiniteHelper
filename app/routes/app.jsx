@@ -13,12 +13,22 @@ export const loader = async ({ request }) => {
 export default function App() {
   const { apiKey } = useLoaderData();
 
-  /*
-    Bewusst ohne s-app-nav: Die App hat genau eine Seite. Eine Navigationsleiste
-    mit einem einzigen Punkt ist kein Wegweiser, sondern Zierrat.
-  */
   return (
     <AppProvider embedded apiKey={apiKey}>
+      {/*
+        Genau ein s-app-nav. App Bridge stellt nur eine Navigationsleiste dar;
+        laegen mehrere Bloecke nebeneinander, bliebe allein der letzte uebrig
+        und alle Links davor waeren nicht erreichbar.
+
+        Die Leiste fehlte anfangs, weil die App nur eine Seite hatte. Mit der
+        Datenschutzseite kam eine zweite dazu - und war von innen ueberhaupt
+        nicht zu erreichen, ausser ueber den Verweis im Hinweistext ueber dem
+        Absende-Knopf.
+      */}
+      <s-app-nav>
+        <s-link href="/app">Apps erfassen</s-link>
+        <s-link href="/app/datenschutz">Datenschutz</s-link>
+      </s-app-nav>
       <Outlet />
     </AppProvider>
   );
