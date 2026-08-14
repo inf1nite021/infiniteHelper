@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LANGS, privacyContent } from "../components/PrivacyContent";
 import { termsContent } from "../components/TermsContent";
+import { contractLang } from "../i18n";
 
 /*
   Oeffentliche Seite: Shopify verlangt fuer die Einreichung eine ohne Anmeldung
@@ -18,7 +19,8 @@ const knopf = (aktiv) => ({
 export default function PrivacyPolicy() {
   const [lang, setLang] = useState("de");
   const c = privacyContent[lang];
-  const t = termsContent[lang];
+  /* Die Nutzungsbedingungen gibt es nur auf EN und DE. */
+  const t = termsContent[contractLang(lang)];
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 24px", fontFamily: "system-ui, -apple-system, sans-serif", color: "#202223", lineHeight: 1.7 }}>

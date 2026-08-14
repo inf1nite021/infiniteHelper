@@ -7,6 +7,7 @@ import { withShop } from "../db.server";
 import { detectApps } from "../lib/detect.server";
 import { loadShopContact, parseEmail, parseMessage } from "../lib/shopContact.server";
 import { MESSAGE_MAX } from "../lib/limits";
+import { useLang } from "../i18n";
 
 const APP_NAME = "infiniteHelper";
 
@@ -124,25 +125,6 @@ export const action = async ({ request }) => {
   return { success: true };
 };
 
-const QUELLEN = {
-  script: "Skript im Shop",
-  theme: "Block im Theme",
-  versand: "Versanddienst",
-  fulfillment: "Fulfillment-Dienst",
-  rabatt: "Rabatt",
-  metafeld: "Metafeld",
-  selbst: "selbst ergänzt",
-};
-
-const FEHLER = {
-  emailMissing: "Bitte eine E-Mail-Adresse für Rückfragen eintragen.",
-  emailInvalid: "Diese E-Mail-Adresse sieht nicht gültig aus. Beispiel: name@firma.de",
-  emailLong: "Die E-Mail-Adresse ist zu lang.",
-  messageLong: `Die Nachricht darf höchstens ${MESSAGE_MAX} Zeichen haben.`,
-  endpointMissing: "Der Versand ist nicht eingerichtet (SUPPORT_ENDPOINT fehlt).",
-  sendFailed: "Konnte nicht gesendet werden. Bitte erneut versuchen oder an support@infinitecodes.de schreiben.",
-};
-
 const feldStil = {
   width: "100%", padding: "8px 10px", border: "1px solid #e1e3e5",
   borderRadius: "8px", fontSize: "14px", font: "inherit",
@@ -161,6 +143,7 @@ function GesperrtesFeld({ label, value }) {
 }
 
 export default function Index() {
+  const { t, lang } = useLang();
   const { contact, detected, lastSentAt } = useLoaderData();
   const actionData = useActionData();
   const navigation = useNavigation();
@@ -203,12 +186,12 @@ export default function Index() {
 
   if (actionData?.success) {
     return (
-      <s-page heading="Anfrage gesendet">
+      <s-page heading={t.sent.heading}>
         <s-card>
           <s-stack gap="base">
-            <s-banner tone="success" heading="Danke – wir haben deine Anfrage erhalten.">
+            <s-banner tone="success" heading={t.sent.banner}>
               <s-paragraph>
-                Wir melden uns per E-Mail an {email}. In der Regel innerhalb von 24–48 Stunden.
+                {t.sent.body(email)}
               </s-paragraph>
             </s-banner>
           </s-stack>
@@ -218,27 +201,23 @@ export default function Index() {
   }
 
   return (
-    <s-page heading="Welche Apps sind zurzeit in Verwendung?" size="large">
+    <s-page heading={t.heading} size="large">
       <s-card>
         <s-stack gap="base">
           <s-paragraph>
-            infiniteHelper sieht nach, welche Apps in deinem Shop installiert sind
-            und schickt uns die Liste zusammen mit deiner Nachricht. Daraus sagen
-            wir dir, was sich durch eine einzige eigene App ersetzen ließe.
+            {t.intro}
           </s-paragraph>
 
           {lastSentAt ? (
             <s-banner tone="info">
               <s-paragraph>
-                Du hast am {new Date(lastSentAt).toLocaleDateString("de-DE")} schon
-                einmal angefragt. Eine weitere Anfrage ist kein Problem – schreib
-                gern dazu, was sich geändert hat.
+                {t.again(new Date(lastSentAt).toLocaleDateString(lang))}
               </s-paragraph>
             </s-banner>
           ) : null}
 
           {actionData?.errorKey ? (
-            <s-banner tone="critical" heading={FEHLER[actionData.errorKey] ?? "Es ist etwas schiefgegangen."}>
+            <s-banner tone="critical" heading={t.errors[actionData.errorKey] ?? t.errors.unknown}>
               {actionData.detail ? <s-paragraph>{actionData.detail}</s-paragraph> : null}
             </s-banner>
           ) : null}
@@ -251,14 +230,14 @@ export default function Index() {
         <div style={{ marginTop: "16px" }}>
           <s-card>
             <s-stack gap="base">
-              <s-heading>Gefundene Apps ({alleApps.length})</s-heading>
+              <s-heading>{t.apps.heading(alleApps.length)}</s-heading>
               <s-text color="subdued">
-                infiniteHelper hat folgende Apps erkannt. Bitte überprüfe die Liste.
+                {t.apps.check}
               </s-text>
 
               {alleApps.length === 0 ? (
                 <s-text color="subdued">
-                  Noch nichts erkannt – trag deine Apps unten selbst ein.
+                  {t.apps.empty}
                 </s-text>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -279,7 +258,7 @@ export default function Index() {
                       <input type="checkbox" name="app" value={app.name} defaultChecked />
                       <span style={{ fontWeight: 600, fontSize: "14px" }}>{app.name}</span>
                       <span style={{ fontSize: "12px", color: "#6d7175", marginLeft: "auto" }}>
-                        {app.quellen.map((q) => QUELLEN[q] ?? q).join(" · ")}
+                        {app.quellen.map((q) => t.quellen[q] ?? q).join(" · ")}
                       </span>
                     </label>
                   ))}
@@ -288,7 +267,7 @@ export default function Index() {
 
               <div>
                 <label style={labelStil} htmlFor="neueApp">
-                  Fehlt eine App? Namen eintragen und einfügen
+                  {t.apps.addLabel}
                 </label>
                 <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                   {/*
@@ -304,12 +283,12 @@ export default function Index() {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") { e.preventDefault(); einfuegen(); }
                     }}
-                    placeholder="z. B. Klaviyo"
+                    placeholder={t.apps.addPlaceholder}
                     maxLength={80}
                     style={{ ...feldStil, flex: 1 }}
                   />
                   {/* type="button", sonst schickt der Knopf das Formular ab. */}
-                  <s-button type="button" onClick={einfuegen}>Einfügen</s-button>
+                  <s-button type="button" onClick={einfuegen}>{t.apps.addButton}</s-button>
                 </div>
               </div>
 
@@ -320,24 +299,23 @@ export default function Index() {
         <div style={{ marginTop: "16px" }}>
           <s-card>
             <s-stack gap="base">
-              <s-heading>Deine Daten</s-heading>
+              <s-heading>{t.data.heading}</s-heading>
               <s-text color="subdued">
-                Die grauen Felder kommen automatisch aus deinem Shop und lassen sich
-                nicht ändern – sie ordnen deine Anfrage eindeutig zu.
+                {t.data.locked}
               </s-text>
 
               <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <GesperrtesFeld label="Vorname" value={contact.firstName} />
-                <GesperrtesFeld label="Nachname" value={contact.lastName} />
+                <GesperrtesFeld label={t.data.firstName} value={contact.firstName} />
+                <GesperrtesFeld label={t.data.lastName} value={contact.lastName} />
               </div>
               <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <GesperrtesFeld label="Shop" value={contact.shop} />
-                <GesperrtesFeld label="Shop-ID" value={contact.shopId} />
-                <GesperrtesFeld label="Shopify-Benutzer-ID" value={contact.userId} />
+                <GesperrtesFeld label={t.data.shop} value={contact.shop} />
+                <GesperrtesFeld label={t.data.shopId} value={contact.shopId} />
+                <GesperrtesFeld label={t.data.userId} value={contact.userId} />
               </div>
 
               <div>
-                <label style={labelStil} htmlFor="email">E-Mail für Rückfragen</label>
+                <label style={labelStil} htmlFor="email">{t.data.email}</label>
                 <input
                   id="email"
                   name="email"
@@ -346,13 +324,13 @@ export default function Index() {
                   maxLength={120}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="An welche Adresse sollen wir antworten?"
+                  placeholder={t.data.emailPlaceholder}
                   style={feldStil}
                 />
               </div>
 
               <div>
-                <label style={labelStil} htmlFor="message">Deine Nachricht</label>
+                <label style={labelStil} htmlFor="message">{t.data.message}</label>
                 <textarea
                   id="message"
                   name="message"
@@ -360,7 +338,7 @@ export default function Index() {
                   maxLength={MESSAGE_MAX}
                   value={nachricht}
                   onChange={(e) => setNachricht(e.target.value)}
-                  placeholder="Was stört dich an deinem heutigen App-Stapel?"
+                  placeholder={t.data.messagePlaceholder}
                   style={{ ...feldStil, resize: "vertical" }}
                 />
                 {/*
@@ -370,7 +348,7 @@ export default function Index() {
                 */}
                 <div style={{ textAlign: "right", fontSize: "12px", marginTop: "4px",
                               color: rest <= 30 ? "#b91c1c" : "#6d7175" }}>
-                  {rest} von {MESSAGE_MAX} Zeichen übrig
+                  {t.data.counter(rest, MESSAGE_MAX)}
                 </div>
               </div>
 
@@ -379,19 +357,16 @@ export default function Index() {
                 koennen, bevor man es abschickt.
               */}
               <s-text color="subdued">
-                Mit dem Senden erhalten wir die oben gezeigten Angaben, deine
-                Nachricht und die ausgewählte App-Liste, um dir zu antworten.
-                Einzelheiten in der{" "}
+                {t.consent}{" "}
                 <a href="/app/datenschutz" style={{ color: "#2c6ecb" }}>
-                  Datenschutzerklärung
+                  {t.consentLink}
                 </a>
-                . Wir sind dafür Verantwortlicher im Sinne der DSGVO – es findet
-                keine Auftragsverarbeitung statt.
+                {t.consentTail}
               </s-text>
 
               <div>
                 <s-button variant="primary" type="submit" {...(sendet ? { loading: true } : {})}>
-                  Anfrage senden
+                  {t.submit}
                 </s-button>
               </div>
             </s-stack>
