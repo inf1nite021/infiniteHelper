@@ -201,9 +201,9 @@ export default function Index() {
       <s-card>
         <s-stack gap="base">
           <s-paragraph>
-            infiniteHelper sieht nach, welche Apps in deinem Shop Spuren hinterlassen
-            haben, und schickt uns die Liste zusammen mit deiner Nachricht. Daraus
-            sagen wir dir, was sich durch eine einzige eigene App ersetzen ließe.
+            infiniteHelper sieht nach, welche Apps in deinem Shop installiert sind
+            und schickt uns die Liste zusammen mit deiner Nachricht. Daraus sagen
+            wir dir, was sich durch eine einzige eigene App ersetzen ließe.
           </s-paragraph>
 
           {lastSentAt ? (
