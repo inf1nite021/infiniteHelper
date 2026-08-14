@@ -40,13 +40,9 @@ export const action = async ({ request }) => {
     ohne Rechtewirkung; ein manipulierter Aufruf koennte hoechstens eine falsche
     App-Liste in ein Ticket schreiben.
   */
-  const gewaehlt = formData.getAll("app").map((w) => w.toString().trim()).filter(Boolean);
-  const eigene = (formData.get("ownApps") ?? "")
-    .toString()
-    .split(/[\n,;]+/)
-    .map((w) => w.trim())
-    .filter(Boolean);
-  const apps = [...new Set([...gewaehlt, ...eigene])];
+  const apps = [
+    ...new Set(formData.getAll("app").map((w) => w.toString().trim()).filter(Boolean)),
+  ];
   const erkannt = Number.parseInt(formData.get("detectedCount"), 10) || 0;
 
   /* Shop und Person erneut serverseitig holen - das Formular liefert nur die freien Felder. */
@@ -135,6 +131,7 @@ const QUELLEN = {
   fulfillment: "Fulfillment-Dienst",
   rabatt: "Rabatt",
   metafeld: "Metafeld",
+  selbst: "selbst ergänzt",
 };
 
 const FEHLER = {
@@ -169,6 +166,30 @@ export default function Index() {
   const navigation = useNavigation();
   const sendet = navigation.state === "submitting";
 
+  /*
+    Selbst ergaenzte Apps liegen im Zustand und werden unter die erkannten
+    gemischt. Sie tragen dasselbe Kaestchen und denselben Feldnamen, also
+    kommen sie ohne Sonderbehandlung beim Versand an.
+  */
+  const [eigene, setEigene] = useState([]);
+  const [neueApp, setNeueApp] = useState("");
+
+  const alleApps = [
+    ...detected,
+    ...eigene.map((name) => ({ name, quellen: ["selbst"] })),
+  ];
+
+  const einfuegen = () => {
+    const name = neueApp.trim();
+    if (!name) return;
+    // Doppelte stillschweigend schlucken, gross/klein egal - der Haendler
+    // soll nicht ueber eine Fehlermeldung stolpern, weil er etwas zweimal
+    // eintraegt, das schon in der Liste steht.
+    const bekannt = alleApps.some((a) => a.name.toLowerCase() === name.toLowerCase());
+    if (!bekannt) setEigene((v) => [...v, name]);
+    setNeueApp("");
+  };
+
   const [nachricht, setNachricht] = useState("");
   /*
     Leer, nicht mit der Shop-Kontaktadresse vorbelegt. Die ist oft ein
@@ -197,7 +218,7 @@ export default function Index() {
   }
 
   return (
-    <s-page heading="Welche Apps zahlst du gerade?" size="large">
+    <s-page heading="Welche Apps sind zurzeit in Verwendung?" size="large">
       <s-card>
         <s-stack gap="base">
           <s-paragraph>
@@ -230,23 +251,18 @@ export default function Index() {
         <div style={{ marginTop: "16px" }}>
           <s-card>
             <s-stack gap="base">
-              <s-heading>Gefundene Apps ({detected.length})</s-heading>
+              <s-heading>Gefundene Apps ({alleApps.length})</s-heading>
               <s-text color="subdued">
-                Shopify erlaubt keiner App, die installierten Apps aufzulisten. Diese
-                Liste stammt aus Spuren – Skripten, Theme-Blöcken, Versanddiensten,
-                Rabatten und Metafeldern. Sie ist deshalb <strong>unvollständig</strong>:
-                Apps, die nur im Hintergrund mit Shopify sprechen, tauchen hier nicht
-                auf. Nimm heraus, was nicht stimmt, und trage unten nach, was fehlt.
+                infiniteHelper hat folgende Apps erkannt. Bitte überprüfe die Liste.
               </s-text>
 
-              {detected.length === 0 ? (
+              {alleApps.length === 0 ? (
                 <s-text color="subdued">
-                  Keine Spuren gefunden. Das heißt nicht, dass du keine Apps hast –
-                  trag sie unten einfach selbst ein.
+                  Noch nichts erkannt – trag deine Apps unten selbst ein.
                 </s-text>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {detected.map((app) => (
+                  {alleApps.map((app) => (
                     <label
                       key={app.name}
                       style={{
@@ -254,6 +270,12 @@ export default function Index() {
                         padding: "8px 10px", border: "1px solid #e1e3e5", borderRadius: "8px",
                       }}
                     >
+                      {/*
+                        Auch die selbst ergaenzten stehen als Kaestchen in derselben
+                        Liste. Damit ist das Abwaehlen zugleich das Zuruecknehmen -
+                        wer sich vertippt, hakt es ab, statt einen Loeschknopf zu
+                        suchen. Und der Versand liest ohnehin nur die Haken.
+                      */}
                       <input type="checkbox" name="app" value={app.name} defaultChecked />
                       <span style={{ fontWeight: 600, fontSize: "14px" }}>{app.name}</span>
                       <span style={{ fontSize: "12px", color: "#6d7175", marginLeft: "auto" }}>
@@ -265,17 +287,32 @@ export default function Index() {
               )}
 
               <div>
-                <label style={labelStil} htmlFor="ownApps">
-                  Weitere Apps, die hier fehlen
+                <label style={labelStil} htmlFor="neueApp">
+                  Fehlt eine App? Namen eintragen und einfügen
                 </label>
-                <textarea
-                  id="ownApps"
-                  name="ownApps"
-                  rows={3}
-                  placeholder="Eine pro Zeile oder mit Komma getrennt"
-                  style={{ ...feldStil, resize: "vertical" }}
-                />
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  {/*
+                    Die Eingabetaste fuegt ein, statt das Formular abzuschicken.
+                    Ohne das waere der haeufigste Griff - Name tippen, Enter -
+                    genau der, der die Anfrage vorzeitig losschickt.
+                  */}
+                  <input
+                    id="neueApp"
+                    type="text"
+                    value={neueApp}
+                    onChange={(e) => setNeueApp(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { e.preventDefault(); einfuegen(); }
+                    }}
+                    placeholder="z. B. Klaviyo"
+                    maxLength={80}
+                    style={{ ...feldStil, flex: 1 }}
+                  />
+                  {/* type="button", sonst schickt der Knopf das Formular ab. */}
+                  <s-button type="button" onClick={einfuegen}>Einfügen</s-button>
+                </div>
               </div>
+
             </s-stack>
           </s-card>
         </div>
