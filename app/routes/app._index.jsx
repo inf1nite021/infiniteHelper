@@ -46,6 +46,18 @@ export const action = async ({ request }) => {
   ];
   const erkannt = Number.parseInt(formData.get("detectedCount"), 10) || 0;
 
+  /*
+    Die Sprache der Oberflaeche mitschicken, statt "de" anzunehmen.
+    Geprueft am 15.08.2026 in kontakt-api/validate.js: Der Endpunkt nimmt jedes
+    zweistellige Kleinbuchstaben-Kuerzel und faellt sonst auf "de" zurueck. Ein
+    Haendler, der die App auf Franzoesisch bedient, bekam bisher ein als
+    deutsch gekennzeichnetes Ticket - und damit vermutlich eine deutsche
+    Antwort.
+  */
+  const SPRACHEN = ["de", "en", "es", "fr", "pt"];
+  const roh = (formData.get("lang") ?? "").toString();
+  const sprache = SPRACHEN.includes(roh) ? roh : "de";
+
   /* Shop und Person erneut serverseitig holen - das Formular liefert nur die freien Felder. */
   const contact = await loadShopContact(admin, session.shop, sessionToken);
 
@@ -65,13 +77,24 @@ export const action = async ({ request }) => {
     Leere Nachricht abfangen: Der Endpunkt weist sie mit "Nachricht fehlt" ab,
     unsere Oberflaeche laesst sie aber zu. Ohne den Rueckfallwert scheiterte
     genau die Anfrage, die nur die App-Liste schicken will.
+
+    Die Liste wird gedeckelt: Ueber 4000 Zeichen weist der Endpunkt alles ab
+    (SUMMARY_MAX), und die Nachricht traegt die Liste huckepack. Ohne Deckel
+    scheiterte eine Anfrage mit sehr vielen Eintraegen an einer Fehlermeldung,
+    die dem Haendler nichts sagt - die Grenze ist fuer ihn nirgends sichtbar.
+    120 Eintraege zu je hoechstens 80 Zeichen bleiben mit Abstand darunter.
   */
-  const appListe = apps.length ? apps.map((a) => `• ${a}`).join("\n") : "(keine angegeben)";
+  const APP_LISTE_MAX = 120;
+  const gemeldet = apps.slice(0, APP_LISTE_MAX);
+  const abgeschnitten = apps.length - gemeldet.length;
+
+  const appListe = gemeldet.length ? gemeldet.map((a) => `• ${a}`).join("\n") : "(keine angegeben)";
   const nachricht = [
     message.value || "(keine Nachricht)",
     "",
     `Gefundene Apps – ${erkannt} erkannt, ${apps.length} gemeldet:`,
     appListe,
+    ...(abgeschnitten > 0 ? [`… und ${abgeschnitten} weitere, hier gekürzt.`] : []),
   ].join("\n");
 
   const payload = {
@@ -84,7 +107,7 @@ export const action = async ({ request }) => {
     shop: contact.shop,
     shopId: contact.shopId,
     userId: contact.userId,
-    lang: "de",
+    lang: sprache,
   };
 
   // eslint-disable-next-line no-undef
@@ -252,6 +275,12 @@ export default function Index() {
 
       <Form method="post">
         <input type="hidden" name="detectedCount" value={detected.length} />
+        {/*
+          Die gewaehlte Sprache mitschicken. Sie steht nur im Browser
+          (localStorage), der Server kennt sie sonst nicht - und schrieb
+          deshalb in jedes Ticket "de".
+        */}
+        <input type="hidden" name="lang" value={lang} />
 
         <div style={{ marginTop: "16px" }}>
           <s-section accessibilityLabel={t.heading}>

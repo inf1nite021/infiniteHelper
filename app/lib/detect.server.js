@@ -7,9 +7,11 @@
  * keine Frage der Zugriffsrechte, sondern so gebaut.
  *
  * Was bleibt, sind Spuren: Dinge, die eine App im Shop hinterlaesst und die
- * ueber die Admin-API sichtbar sind. Fuenf Quellen decken die gaengigen Faelle
- * ab. Jede nennt, woher der Fund stammt - der Haendler soll die Liste beurteilen
- * koennen, nicht bloss glauben.
+ * ueber die Admin-API sichtbar sind. Sechs Quellen decken die gaengigen Faelle
+ * ab - Script-Tags, App-Bloecke im Theme, Versanddienste, Fulfillment-Dienste,
+ * Rabatte aus App-Functions und Metafeld-Namensraeume. Jede nennt, woher der
+ * Fund stammt: Der Haendler soll die Liste beurteilen koennen, nicht bloss
+ * glauben.
  *
  * WICHTIG, und die Oberflaeche sagt es auch: Diese Erkennung ist
  * unvollstaendig. Eine App, die ausschliesslich die Admin-API nutzt - Daten
@@ -30,7 +32,7 @@ function fund(name, quelle, detail = "") {
  * Ebene genuegt: Sie ist das, was der Haendler wiedererkennt, waehrend
  * "cdn.eu-west-1.klaviyo.com" nur Rauschen waere.
  */
-function anbieterAusUrl(url) {
+export function anbieterAusUrl(url) {
   try {
     const host = new URL(url).hostname.replace(/^www\./, "");
     const teile = host.split(".");
@@ -210,6 +212,27 @@ async function ausMetafelder(admin) {
 }
 
 /**
+ * Der Name, unter dem zwei Funde als dieselbe App gelten.
+ *
+ * Die Quellen nennen dieselbe App verschieden: Der Script-Tag liefert die
+ * Domain ("klaviyo.com"), das Theme den Handle aus dem App Store ("klaviyo"),
+ * ein Versanddienst den Anzeigenamen ("Klaviyo"). Ohne diese Angleichung stand
+ * dieselbe App zwei- oder dreimal in der Liste - und der Haendler haette
+ * abwaehlen muessen, was die App gerade erst als Fund verkauft hat.
+ *
+ * Verglichen wird kleingeschrieben, ohne Endung und ohne Trennzeichen. Das
+ * fasst "klaviyo.com", "Klaviyo" und "klaviyo-email" NICHT alle zusammen -
+ * nur die ersten beiden. Absichtlich zurueckhaltend: Zwei Zeilen zu viel sind
+ * ein Schoenheitsfehler, zwei faelschlich verschmolzene Apps ein Datenfehler.
+ */
+export function vergleichsname(name) {
+  return name
+    .toLowerCase()
+    .replace(/\.(com|de|io|net|org|co|app|shop|ai)$/u, "")
+    .replace(/[\s._-]/gu, "");
+}
+
+/**
  * Alle Quellen abfragen und zu einer Liste zusammenfuehren.
  *
  * Parallel, weil die Quellen nichts voneinander wissen und der Haendler nicht
@@ -230,11 +253,16 @@ export async function detectApps(admin) {
   // allen Fundstellen.
   const zusammen = new Map();
   for (const fundstelle of gruppen.flat()) {
-    const schluessel = fundstelle.name.toLowerCase();
+    const schluessel = vergleichsname(fundstelle.name);
     const vorhanden = zusammen.get(schluessel);
     if (vorhanden) {
       if (!vorhanden.quellen.includes(fundstelle.quelle)) {
         vorhanden.quellen.push(fundstelle.quelle);
+      }
+      // Der kuerzere Name gewinnt: "klaviyo" liest sich besser als
+      // "klaviyo.com", und der Theme-Handle ist der Name aus dem App Store.
+      if (fundstelle.name.length < vorhanden.name.length) {
+        vorhanden.name = fundstelle.name;
       }
     } else {
       zusammen.set(schluessel, {
